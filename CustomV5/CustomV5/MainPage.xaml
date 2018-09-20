@@ -21,8 +21,8 @@
         <ProgressBar x:Name="Precision"/>
 
   <ScrollView>
-    <Label x:Name="text"/>
-  </ScrollView>
+            <Label x:Name="text"/>
+        </ScrollView>
     </StackLayout>
 
 

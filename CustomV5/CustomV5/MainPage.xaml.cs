@@ -21,6 +21,7 @@ namespace CustomV5
     public partial class MainPage : ContentPage
     {
         private MediaFile _foto;
+        private DniModel dniModel;
         public MainPage()
         {
             InitializeComponent();
@@ -34,7 +35,7 @@ namespace CustomV5
 
                 var foto = await CrossMedia.Current.PickPhotoAsync(new PickMediaOptions()
                 {
-                    CompressionQuality = 92
+                    CompressionQuality = 100
                 });
 
                 if (foto == null)
@@ -55,7 +56,7 @@ namespace CustomV5
 
                 var foto = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions()
                 {
-                    CompressionQuality = 92,
+                    CompressionQuality = 100,
                     SaveToAlbum = true
                     //Directory="clasificator",
                     //Name="source.jpg"
@@ -74,7 +75,7 @@ namespace CustomV5
 
         private async void ClasificadorClick(object sender, EventArgs e)
         {
-            const string endpoint = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/1cd65429-17d7-4a80-a31e-a57023de206f/image?iterationId=e15f4d5d-0b3c-4fec-80a4-e27ed9beffa5";
+            const string endpoint = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/f0bbc42f-ca2d-4c55-b66d-c81536c51972/image?iterationId=4c950f4f-0e75-4292-80f5-675a52688a3c";
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("Prediction-Key", "d20c03142343439d8598d1cf03558421");
 
@@ -134,6 +135,11 @@ namespace CustomV5
                 List<Line> lines = new List<Line>();
                 List<Word> words = new List<Word>();
                 var json2 = await response2.Content.ReadAsStringAsync();
+                string str="";
+                string PrimerApellido = "";
+                string SegundoApellido = "";
+                string Nombre = "";
+                string Dni = "";
 
                 var textObject = JsonConvert.DeserializeObject<TextObject>(json2);
 
@@ -152,7 +158,22 @@ namespace CustomV5
                 foreach (var w in words)
                 {
                     text.Text = $"{text.Text} {w.text}";
+                    //str = $"{text.Text} {w.text}";
                 }
+
+                //             < Label x: Name = "PrimerApellido" />
+
+                //< Label x: Name = "SegundoApellido" />
+
+                //  < Label x: Name = "Nombre" />
+
+                //    < Label x: Name = "Dni" />
+                
+                 PrimerApellido = getBetween(text.Text, "APELLIDO", "SEGUNDO");
+                
+                SegundoApellido = getBetween(str, "SEGUNDO APELLIDO", "NOMBRE");
+                Nombre = getBetween(str, "NOMBRE", "SEXO");
+                Dni = getBetween(str, "NUM", "");
 
             }
         }
@@ -167,8 +188,31 @@ namespace CustomV5
             }
         }
 
-       
+        public static string getBetween(string strSource, string strStart, string strEnd)
+        {
+            int Start, End;
+            if (strSource.Contains(strStart) && (strSource.Contains(strEnd) || strEnd == ""))
+            {
+                Start = strSource.IndexOf(strStart, 0) + strStart.Length;
+                if (strEnd != "")
+                {
+                    End = strSource.IndexOf(strEnd, Start);
+                    return strSource.Substring(Start, End - Start);
+                }
+                else
+                {
+                    End = Start + 10;
+                    return strSource.Substring(Start, End - Start);
+                }
+            }
+            else
+            {
+                return "";
+            }
+        }
 
-        
+
+
+
     }
 }
