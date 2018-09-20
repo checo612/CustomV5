@@ -14,8 +14,8 @@
 
         <Button Text="Elige una foto" Clicked="ElegirClick"></Button>
         <Button Text="Tomar una foto" Clicked="TomarClick"></Button>
-        <Button Text="Analizar Texto" Clicked="AnalizarTexto"></Button>
-        <Button Text="Analizar" Clicked="ClasificadorClick"></Button>
+        <!--<Button Text="Analizar Texto" Clicked="AnalizarTexto"></Button>-->
+        <!--<Button Text="Analizar" Clicked="ClasificadorClick"></Button>-->
 
         <Label x:Name="Resultado"/>
         <ProgressBar x:Name="Precision"/>
