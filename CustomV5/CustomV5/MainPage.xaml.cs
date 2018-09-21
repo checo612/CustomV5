@@ -16,6 +16,7 @@ using static CustomV5.Models.ImageTextModel;
 using Region = CustomV5.Models.ImageTextModel.Region;
 using static CustomV5.Models.PredictionResponseModel;
 
+
 namespace CustomV5
 {
     public partial class MainPage : ContentPage
@@ -50,8 +51,9 @@ namespace CustomV5
 
                 _foto = foto;
                 ImgSource.Source = FileImageSource.FromFile(foto.Path);
-                await ClasificadorClick();
+
             }
+            await ClasificadorClick();
         }
 
         private async void TomarClick(object sender, EventArgs e)
@@ -83,10 +85,10 @@ namespace CustomV5
             await ClasificadorClick();
         }
 
-        //private async void ClasificadorClick(object sender, EventArgs e)
 
         private async Task ClasificadorClick()
         {
+
             const string endpoint = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/f0bbc42f-ca2d-4c55-b66d-c81536c51972/image?iterationId=4c950f4f-0e75-4292-80f5-675a52688a3c";
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("Prediction-Key", "d20c03142343439d8598d1cf03558421");
@@ -116,9 +118,9 @@ namespace CustomV5
             await AnalizarTexto();
         }
 
-        //private async void AnalizarTexto(object sender, EventArgs e)
         private async Task AnalizarTexto()
         {
+
             var httpClient2 = new HttpClient();
             const string subscriptionKey = "11353e12efd34147a54b3914bb575f44";
             httpClient2.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
@@ -133,10 +135,13 @@ namespace CustomV5
 
                 using (ByteArrayContent content = new ByteArrayContent(byteData))
                 {
+
                     content.Headers.ContentType =
                         new MediaTypeHeaderValue("application/octet-stream");
 
                     response2 = await httpClient2.PostAsync(endpoint2, content);
+
+
                 }
 
                 if (!response2.IsSuccessStatusCode)
@@ -145,17 +150,22 @@ namespace CustomV5
                     return;
                 }
 
+                //catch (Exception exp)
+                //{
+                //    await DisplayAlert("Error de conexion", exp.ToString(), "OK");
+                //}
+
                 text.Text = "";
                 List<Region> regions = new List<Region>();
                 List<Line> lines = new List<Line>();
                 List<Word> words = new List<Word>();
                 var json2 = await response2.Content.ReadAsStringAsync();
 
-                var str = "";
+                var str = string.Empty;
                 var nombre = "";
                 var primerApellido = "";
                 var segundoApellido = "";
-                var numDNI = "";
+                var numDNI = string.Empty;
                 var apellidos = "";
 
 
@@ -178,11 +188,12 @@ namespace CustomV5
                     text.Text = $"{text.Text} {w.text}";
 
                     str = $"{text.Text} {w.text}";
-                }
 
-                //Para obtener datos desde un INE
-                //nombre = getBetween(str, "NOMBRE", "DOMICILIO");
-                //await DisplayAlert("Text", nombre, "Ok");
+                    if (char.IsDigit(w.text[0]) && w.text.Length == 9 && char.IsLetter(w.text[w.text.Length - 1]))
+                    {
+                        numDNI = w.text;
+                    }
+                }
 
                 switch (tagFoto)
                 {
@@ -191,23 +202,24 @@ namespace CustomV5
                         primerApellido = getBetween(str, "APELLIDO", "SEGUNDO");
                         segundoApellido = getBetween(str, "SEGUNDO APELLIDO", "NOMBRE");
                         nombre = getBetween(str, "NOMBRE", "NACIONALIDAD");
-                        numDNI = getBetween(str, "NÚM. ", "");
+
                         //Alert para datos de DNI 2.0
-                        await DisplayAlert("DNI 2.0: Datos obtenidos", $"{nombre}{primerApellido}{segundoApellido} {numDNI}", "Ok");
+                        await DisplayAlert("DNI 2.0: Datos obtenidos", $"{segundoApellido} {primerApellido} {nombre} {numDNI}", "Ok");
                         break;
                     case "DNI 3.0":
                         //Obtener datos desde un dni 3.0
                         apellidos = getBetween(str, "APELLIDOS", "NOMBRE");
                         nombre = getBetween(str, "NOMBRE", "SEXO");
-                        numDNI = getBetween(str, "DNI ", "");
+                        //numDNI = getBetween(str, "DNI ", "");
                         //Alert para datos de DNI 3.0
-                        await DisplayAlert("DNI 3.0: Datos obtenidos", $"{nombre}{apellidos} {numDNI}", "Ok");
+                        await DisplayAlert("DNI 3.0: Datos obtenidos", $"{segundoApellido} {primerApellido} {nombre} {numDNI}", "Ok");
                         break;
                     default:
                         await DisplayAlert("Error", "Documento no válido", "Ok");
                         break;
                 }
             }
+
         }
 
         public static string getBetween(string strSource, string strStart, string strEnd)
