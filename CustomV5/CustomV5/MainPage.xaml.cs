@@ -162,11 +162,11 @@ namespace CustomV5
                 var json2 = await response2.Content.ReadAsStringAsync();
 
                 var str = string.Empty;
-                var nombre = "";
-                var primerApellido = "";
-                var segundoApellido = "";
+                var nombre = string.Empty;
+                var primerApellido = string.Empty;
+                var segundoApellido = string.Empty;
                 var numDNI = string.Empty;
-                var apellidos = "";
+                var apellidos = string.Empty;
 
 
                 var textObject = JsonConvert.DeserializeObject<TextObject>(json2);

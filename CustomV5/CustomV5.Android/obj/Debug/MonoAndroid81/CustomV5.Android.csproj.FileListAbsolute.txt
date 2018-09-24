@@ -103,9 +103,7 @@ C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\android\assets\System.Xml.pdb
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\android\assets\Xamarin.Forms.Core.pdb
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\android\assets\Xamarin.Forms.Xaml.pdb
-C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5\bin\Debug\netstandard2.0\CustomV5.dll
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\linksrc\CustomV5.Android.pdb
-C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\bin\Debug\CustomV5.dll.mdb
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\linksrc\CustomV5.dll.mdb
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\linksrc\FormsViewGroup.dll.mdb
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\linksrc\Xamarin.Forms.Platform.Android.dll.mdb
