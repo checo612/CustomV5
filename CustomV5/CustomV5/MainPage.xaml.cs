@@ -204,7 +204,7 @@ namespace CustomV5
                         nombre = getBetween(str, "NOMBRE", "NACIONALIDAD");
 
                         //Alert para datos de DNI 2.0
-                        await DisplayAlert("DNI 2.0: Datos obtenidos", $"{segundoApellido} {primerApellido} {nombre} {numDNI}", "Ok");
+                        await DisplayAlert("DNI 2.0: Datos obtenidos", $"PRIMER APELLIDO: {primerApellido}\nSEGUNDO APELLIDO: {segundoApellido} \nNOMBRE: {nombre}\nDNI: {numDNI}", "Ok");
                         break;
                     case "DNI 3.0":
                         //Obtener datos desde un dni 3.0
@@ -212,7 +212,7 @@ namespace CustomV5
                         nombre = getBetween(str, "NOMBRE", "SEXO");
                         //numDNI = getBetween(str, "DNI ", "");
                         //Alert para datos de DNI 3.0
-                        await DisplayAlert("DNI 3.0: Datos obtenidos", $"{segundoApellido} {primerApellido} {nombre} {numDNI}", "Ok");
+                        await DisplayAlert("DNI 3.0: Datos obtenidos", $"APELLIDOS: {apellidos} \nNOMBRE: {nombre} \nDNI: {numDNI}", "Ok");
                         break;
                     default:
                         await DisplayAlert("Error", "Documento no válido", "Ok");
