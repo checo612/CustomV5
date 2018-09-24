@@ -4,6 +4,7 @@ C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\bin\Debug
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\bin\Debug\com.companyname.CustomV5.Android-Signed.apk
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\bin\Debug\CustomV5.dll
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\bin\Debug\CustomV5.pdb
+C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\bin\Debug\CustomV5.dll.mdb
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\CustomV5.Android.csprojAssemblyReference.cache
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\res.flag
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\CustomV5.Android.csproj.CoreCompileInputs.cache
@@ -73,7 +74,6 @@ C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\linksrc\System.Web.Services.pdb
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\linksrc\Mono.Security.pdb
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\linksrc\System.ServiceModel.Internals.pdb
-C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\bin\Debug\CustomV5.dll.mdb
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\bin\Debug\FormsViewGroup.dll.mdb
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\bin\Debug\Xamarin.Forms.Platform.Android.dll.mdb
 C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5.Android\obj\Debug\MonoAndroid81\linksrc\CustomV5.dll.mdb

@@ -16,11 +16,15 @@ using static CustomV5.Models.ImageTextModel;
 using Region = CustomV5.Models.ImageTextModel.Region;
 using static CustomV5.Models.PredictionResponseModel;
 
+
 namespace CustomV5
 {
     public partial class MainPage : ContentPage
     {
         private MediaFile _foto;
+
+        private string tagFoto;
+
         public MainPage()
         {
             InitializeComponent();
@@ -28,13 +32,16 @@ namespace CustomV5
 
         private async void ElegirClick(object sender, EventArgs e)
         {
-            using (UserDialogs.Instance.Loading("Loading..."))
+            Resultado.Text = "";
+            Precision.Progress = 0;
+            text.Text = "";
+            using (UserDialogs.Instance.Loading("Cargando imagen..."))
             {
                 await CrossMedia.Current.Initialize();
 
                 var foto = await CrossMedia.Current.PickPhotoAsync(new PickMediaOptions()
                 {
-                    CompressionQuality = 92
+                    CompressionQuality = 100
                 });
 
                 if (foto == null)
@@ -44,18 +51,23 @@ namespace CustomV5
 
                 _foto = foto;
                 ImgSource.Source = FileImageSource.FromFile(foto.Path);
+
             }
+            await ClasificadorClick();
         }
 
         private async void TomarClick(object sender, EventArgs e)
         {
-            using (UserDialogs.Instance.Loading("Loading..."))
+            Resultado.Text = "";
+            Precision.Progress = 0;
+            text.Text = "";
+            using (UserDialogs.Instance.Loading("Cargando imagen..."))
             {
                 await CrossMedia.Current.Initialize();
 
                 var foto = await CrossMedia.Current.TakePhotoAsync(new StoreCameraMediaOptions()
                 {
-                    CompressionQuality = 92,
+                    CompressionQuality = 100,
                     SaveToAlbum = true
                     //Directory="clasificator",
                     //Name="source.jpg"
@@ -70,17 +82,20 @@ namespace CustomV5
                 ImgSource.Source = FileImageSource.FromFile(foto.Path);
 
             }
+            await ClasificadorClick();
         }
 
-        private async void ClasificadorClick(object sender, EventArgs e)
+
+        private async Task ClasificadorClick()
         {
-            const string endpoint = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/1cd65429-17d7-4a80-a31e-a57023de206f/image?iterationId=e15f4d5d-0b3c-4fec-80a4-e27ed9beffa5";
+
+            const string endpoint = "https://southcentralus.api.cognitive.microsoft.com/customvision/v2.0/Prediction/f0bbc42f-ca2d-4c55-b66d-c81536c51972/image?iterationId=4c950f4f-0e75-4292-80f5-675a52688a3c";
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("Prediction-Key", "d20c03142343439d8598d1cf03558421");
 
             var contentStream = new StreamContent(_foto.GetStream());
 
-            using (UserDialogs.Instance.Loading("Loading..."))
+            using (UserDialogs.Instance.Loading("Identificando documento..."))
             {
                 var response = await httpClient.PostAsync(endpoint, contentStream);
 
@@ -95,32 +110,38 @@ namespace CustomV5
                 var prediction = JsonConvert.DeserializeObject<PredictionResponse>(json);
 
                 var tag = prediction.predictions.First();
+                tagFoto = tag.tagName;
 
                 Resultado.Text = $"{tag.tagName} - {tag.probability:p0}";
                 Precision.Progress = tag.probability;
             }
+            await AnalizarTexto();
         }
 
-        private async void AnalizarTexto(object sender, EventArgs e)
+        private async Task AnalizarTexto()
         {
+
             var httpClient2 = new HttpClient();
             const string subscriptionKey = "11353e12efd34147a54b3914bb575f44";
             httpClient2.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
-            const string endpoint2 = "https://southcentralus.api.cognitive.microsoft.com/vision/v2.0/ocr?language=unk&detectOrientation=true";
+            const string endpoint2 = "https://southcentralus.api.cognitive.microsoft.com/vision/v2.0/ocr?language=es&detectOrientation=true";
 
             HttpResponseMessage response2;
 
             byte[] byteData = GetImageAsByteArray(_foto.Path);
 
-            using (UserDialogs.Instance.Loading("Loading..."))
+            using (UserDialogs.Instance.Loading("Obteniendo información..."))
             {
 
                 using (ByteArrayContent content = new ByteArrayContent(byteData))
                 {
+
                     content.Headers.ContentType =
                         new MediaTypeHeaderValue("application/octet-stream");
 
                     response2 = await httpClient2.PostAsync(endpoint2, content);
+
+
                 }
 
                 if (!response2.IsSuccessStatusCode)
@@ -129,11 +150,24 @@ namespace CustomV5
                     return;
                 }
 
+                //catch (Exception exp)
+                //{
+                //    await DisplayAlert("Error de conexion", exp.ToString(), "OK");
+                //}
+
                 text.Text = "";
                 List<Region> regions = new List<Region>();
                 List<Line> lines = new List<Line>();
                 List<Word> words = new List<Word>();
                 var json2 = await response2.Content.ReadAsStringAsync();
+
+                var str = string.Empty;
+                var nombre = string.Empty;
+                var primerApellido = string.Empty;
+                var segundoApellido = string.Empty;
+                var numDNI = string.Empty;
+                var apellidos = string.Empty;
+
 
                 var textObject = JsonConvert.DeserializeObject<TextObject>(json2);
 
@@ -152,7 +186,62 @@ namespace CustomV5
                 foreach (var w in words)
                 {
                     text.Text = $"{text.Text} {w.text}";
+
+                    str = $"{text.Text} {w.text}";
+
+                    if (char.IsDigit(w.text[0]) && w.text.Length == 9 && char.IsLetter(w.text[w.text.Length - 1]))
+                    {
+                        numDNI = w.text;
+                    }
                 }
+
+                switch (tagFoto)
+                {
+                    case "DNI 2.0":
+                        //Obtener datos desde un dni 2.0
+                        primerApellido = getBetween(str, "APELLIDO", "SEGUNDO");
+                        segundoApellido = getBetween(str, "SEGUNDO APELLIDO", "NOMBRE");
+                        nombre = getBetween(str, "NOMBRE", "NACIONALIDAD");
+
+                        //Alert para datos de DNI 2.0
+                        await DisplayAlert("DNI 2.0: Datos obtenidos", $"PRIMER APELLIDO: {primerApellido}\nSEGUNDO APELLIDO: {segundoApellido} \nNOMBRE: {nombre}\nDNI: {numDNI}", "Ok");
+                        break;
+                    case "DNI 3.0":
+                        //Obtener datos desde un dni 3.0
+                        apellidos = getBetween(str, "APELLIDOS", "NOMBRE");
+                        nombre = getBetween(str, "NOMBRE", "SEXO");
+                        //numDNI = getBetween(str, "DNI ", "");
+                        //Alert para datos de DNI 3.0
+                        await DisplayAlert("DNI 3.0: Datos obtenidos", $"APELLIDOS: {apellidos} \nNOMBRE: {nombre} \nDNI: {numDNI}", "Ok");
+                        break;
+                    default:
+                        await DisplayAlert("Error", "Documento no válido", "Ok");
+                        break;
+                }
+            }
+
+        }
+
+        public static string getBetween(string strSource, string strStart, string strEnd)
+        {
+            int Start, End;
+            if (strSource.Contains(strStart) && (strSource.Contains(strEnd) || strEnd == ""))
+            {
+                Start = strSource.IndexOf(strStart, 0) + strStart.Length;
+                if (strEnd != "")
+                {
+                    End = strSource.IndexOf(strEnd, Start);
+                    return strSource.Substring(Start, End - Start);
+                }
+                else
+                {
+                    End = Start + 10;
+                    return strSource.Substring(Start, End - Start);
+                }
+            }
+            else
+            {
+                return "";
 
             }
         }
@@ -167,8 +256,6 @@ namespace CustomV5
             }
         }
 
-       
 
-        
     }
 }
