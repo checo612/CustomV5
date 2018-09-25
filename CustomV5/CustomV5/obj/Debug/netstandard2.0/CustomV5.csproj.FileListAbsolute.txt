@@ -13,7 +13,6 @@ C:\Users\sergio.guzman\source\repos\CustomV5\CustomV5\CustomV5\obj\Debug\netstan
 C:\Users\julio.leal\Documents\Azure\CustomV5\CustomV5\CustomV5\bin\Debug\netstandard2.0\CustomV5.deps.json
 C:\Users\julio.leal\Documents\Azure\CustomV5\CustomV5\CustomV5\bin\Debug\netstandard2.0\CustomV5.dll
 C:\Users\julio.leal\Documents\Azure\CustomV5\CustomV5\CustomV5\bin\Debug\netstandard2.0\CustomV5.pdb
-C:\Users\julio.leal\Documents\Azure\CustomV5\CustomV5\CustomV5\obj\Debug\netstandard2.0\CustomV5.csprojAssemblyReference.cache
 C:\Users\julio.leal\Documents\Azure\CustomV5\CustomV5\CustomV5\obj\Debug\netstandard2.0\App.xaml.g.cs
 C:\Users\julio.leal\Documents\Azure\CustomV5\CustomV5\CustomV5\obj\Debug\netstandard2.0\MainPage.xaml.g.cs
 C:\Users\julio.leal\Documents\Azure\CustomV5\CustomV5\CustomV5\obj\Debug\netstandard2.0\CustomV5.csproj.CoreCompileInputs.cache
@@ -22,3 +21,4 @@ C:\Users\julio.leal\Documents\Azure\CustomV5\CustomV5\CustomV5\obj\Debug\netstan
 C:\Users\julio.leal\Documents\Azure\CustomV5\CustomV5\CustomV5\obj\Debug\netstandard2.0\XamlC.stamp
 C:\Users\julio.leal\Documents\Azure\CustomV5\CustomV5\CustomV5\obj\Debug\netstandard2.0\CustomV5.dll
 C:\Users\julio.leal\Documents\Azure\CustomV5\CustomV5\CustomV5\obj\Debug\netstandard2.0\CustomV5.pdb
+C:\Users\julio.leal\Documents\Azure\CustomV5\CustomV5\CustomV5\obj\Debug\netstandard2.0\CustomV5.csprojAssemblyReference.cache
