@@ -121,10 +121,127 @@ namespace CustomV5
             var httpClient2 = new HttpClient();
             const string subscriptionKey = "11353e12efd34147a54b3914bb575f44";
             httpClient2.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
-            //const string endpoint2 = "https://southcentralus.api.cognitive.microsoft.com/vision/v2.0/ocr?language=es&detectOrientation=true";
+            const string endpoint2 = "https://southcentralus.api.cognitive.microsoft.com/vision/v2.0/ocr?language=es&detectOrientation=true";
+
+            HttpResponseMessage response2;
+
+            byte[] byteData = GetImageAsByteArray(_foto.Path);
+
+            using (UserDialogs.Instance.Loading("Obteniendo información..."))
+            {
+
+                using (ByteArrayContent content = new ByteArrayContent(byteData))
+                {
+                    content.Headers.ContentType =
+                        new MediaTypeHeaderValue("application/octet-stream");
+
+                    response2 = await httpClient2.PostAsync(endpoint2, content);
+                }
+
+                if (!response2.IsSuccessStatusCode)
+                {
+                    UserDialogs.Instance.Toast("A ocurrido un error en ocr");
+                    return;
+                }
+
+                text.Text = "";
+                List<Region> regions = new List<Region>();
+                List<Line> lines = new List<Line>();
+                List<Word> words = new List<Word>();
+                var json2 = await response2.Content.ReadAsStringAsync();
+                var str = "";
+                var nombre = "";
+                var primerApellido = "";
+                var segundoApellido = "";
+                var numDNI = "";
+                var apellidos = "";
+
+
+                //--print
+                var textObject = JsonConvert.DeserializeObject<TextObject>(json2);
+
+                regions = textObject.regions.ToList();
+
+                foreach (var r in regions)
+                {
+                    lines.AddRange(r.lines.ToList());
+                }
+
+                foreach (var l in lines)
+                {
+                    words.AddRange(l.words.ToList());
+                }
+
+
+                foreach (var w in words)
+                {
+                    text.Text = $"{text.Text} {w.text}";
+
+                    str = $"{text.Text} {w.text}";
+
+                    if (char.IsDigit(w.text[0]) && w.text.Length == 9 && char.IsLetter(w.text[w.text.Length - 1]))
+                    {
+                        numDNI = w.text;
+                    }
+                }
+
+                //foreach (var w in words)
+                //{
+                //    if (!w.text.Contains("FECHA") && !w.text.Contains("ESPAÑA") && !w.text.Contains("NACIMIENTO") && !w.text.Contains("ESP ") && !w.text.Contains("DESP") && !w.text.Contains("VALIDO") && !w.text.Contains("HASTA") && !w.text.Contains("SSU") && !w.text.Contains(" M ") && !w.text.Contains(" H "))
+                //    {
+
+                //        text.Text = $"{text.Text} {w.text}";
+                //        str = $"{text.Text} {w.text}";
+                //    }
+                //}
+
+                List<string> palabras = new List<string>();
+                string[] split = str.Split(new Char[] { ' ', ',', '.', ':', '\t' });
+                foreach (string s in split)
+                {
+
+                    if (s.Trim() != "")
+                        palabras.Add(s);
+                }                
+
+                switch (tagFoto)
+                {
+                    case "DNI 2.0":
+                        //Obtener datos desde un dni 2.0
+                        primerApellido = getBetween(str, "APELLIDO", "SEGUNDO");
+                        segundoApellido = getBetween(str, "SEGUNDO APELLIDO", "NOMBRE");
+                        nombre = getBetween(str, "NOMBRE", "NACIONALIDAD");
+                        //numDNI = getBetween(str, "NÚM. ", "");
+                        //Alert para datos de DNI 2.0
+                        await DisplayAlert("DNI 2.0: Datos obtenidos", $"{nombre}{primerApellido}{segundoApellido} {numDNI}", "Ok");
+                        break;
+                    case "DNI 3.0":
+                        //Obtener datos desde un dni 3.0
+                        apellidos = getBetween(str, "APELLIDOS", "NOMBRE");
+                        nombre = getBetween(str, "NOMBRE", "SEXO");
+                        numDNI = getBetween(str, "DNI ", "");
+                        //if (numDNI == "")
+                        //{
+                        //    numDNI = getBetween(str, "DM ", "");
+                        //}
+                        //Alert para datos de DNI 3.0
+                        await DisplayAlert("DNI 3.0: Datos obtenidos", $"{nombre}{apellidos} {numDNI}", "Ok");
+                        break;
+                    default:
+                        await DisplayAlert("Error", "Documento no válido", "Ok");
+                        break;
+                }
+            }
+        }
+
+        //private async void AnalizarTexto(object sender, EventArgs e)
+        private async Task AnalizarHandText()
+        {
+            var httpClient2 = new HttpClient();
+            const string subscriptionKey = "11353e12efd34147a54b3914bb575f44";
+            httpClient2.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
             const string endpoint2 = "https://southcentralus.api.cognitive.microsoft.com/vision/v2.0/recognizeText?mode=Handwritten";
 
-            //Hand var
             string operationLocation;
 
             HttpResponseMessage response2;
@@ -221,105 +338,7 @@ namespace CustomV5
 
                 // Display the JSON response.
                 //text.Text = $"\nResponse:\n\n{JToken.Parse(contentString).ToString()}\n";
-
-
-
-
-                //--print
-                //var textObject = JsonConvert.DeserializeObject<TextObject>(json2);
-
-                //regions = textObject.regions.ToList();
-
-                //foreach (var r in regions)
-                //{
-                //    lines.AddRange(r.lines.ToList());
-                //}
-
-                //foreach (var l in lines)
-                //{
-                //    words.AddRange(l.words.ToList());
-                //}
-
-                ////foreach (var w in words)
-                ////{
-                ////    if (!w.text.Contains("FECHA") && !w.text.Contains("ESPAÑA") && !w.text.Contains("NACIMIENTO") && !w.text.Contains("ESP ") && !w.text.Contains("DESP") && !w.text.Contains("VALIDO") && !w.text.Contains("HASTA") && !w.text.Contains("SSU") && !w.text.Contains(" M ") && !w.text.Contains(" H "))
-                ////    {
-
-                ////        text.Text = $"{text.Text} {w.text}";
-                ////        str = $"{text.Text} {w.text}";
-                ////    }
-                ////}
-
-                //foreach (var w in words)
-                //{
-                //    text.Text = $"{text.Text} {w.text}";
-
-                //    str = $"{text.Text} {w.text}";
-
-                //    if (char.IsDigit(w.text[0]) && w.text.Length == 9 && char.IsLetter(w.text[w.text.Length - 1]))
-                //    {
-                //        numDNI = w.text;
-                //    }
-                //}
-
-                //List<string> palabras = new List<string>();
-                //string[] split = str.Split(new Char[] { ' ', ',', '.', ':', '\t' });
-                //foreach (string s in split)
-                //{
-
-                //    if (s.Trim() != "")
-                //        palabras.Add(s);
-                //}
-
-                ////foreach (string p in palabras)
-                ////{
-                ////    if (p.Length == 9)
-                ////    {
-                ////        if (p.Substring(0, 1) == "1" ||
-                ////            p.Substring(0, 1) == "2" ||
-                ////            p.Substring(0, 1) == "3" ||
-                ////            p.Substring(0, 1) == "4" ||
-                ////            p.Substring(0, 1) == "5" ||
-                ////            p.Substring(0, 1) == "6" ||
-                ////            p.Substring(0, 1) == "7" ||
-                ////            p.Substring(0, 1) == "8" ||
-                ////            p.Substring(0, 1) == "9" ||
-                ////            p.Substring(0, 1) == "0")
-                ////        {
-                ////            if (p.Substring(7, 8) == "T" ||
-                ////                p.Substring(7, 8) == "R" ||
-                ////                p.Substring(7, 8) == "W" ||
-                ////                p.Substring(7, 8) == "A" ||
-                ////                p.Substring(7, 8) == "G" ||
-                ////                p.Substring(7, 8) == "M" ||
-                ////                p.Substring(7, 8) == "Y" ||
-                ////                p.Substring(7, 8) == "F" ||
-                ////                p.Substring(7, 8) == "P" ||
-                ////                p.Substring(7, 8) == "D" ||
-                ////                p.Substring(7, 8) == "X" ||
-                ////                p.Substring(7, 8) == "B" ||
-                ////                p.Substring(7, 8) == "N" ||
-                ////                p.Substring(7, 8) == "J" ||
-                ////                p.Substring(7, 8) == "Z" ||
-                ////                p.Substring(7, 8) == "S" ||
-                ////                p.Substring(7, 8) == "Q" ||
-                ////                p.Substring(7, 8) == "V" ||
-                ////                p.Substring(7, 8) == "H" ||
-                ////                p.Substring(7, 8) == "L" ||
-                ////                p.Substring(7, 8) == "C" ||
-                ////                p.Substring(7, 8) == "K" ||
-                ////                p.Substring(7, 8) == "E")
-                ////            {
-                ////                numDNI = p;
-                ////            }
-                ////        }
-                ////    }
-                ////}
-
-                ////Para obtener datos desde un INE
-                ////nombre = getBetween(str, "NOMBRE", "DOMICILIO");
-                ////await DisplayAlert("Text", nombre, "Ok");
-
+                
                 //switch (tagFoto)
                 //{
                 //    case "DNI 2.0":
